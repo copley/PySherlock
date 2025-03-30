@@ -2,11 +2,11 @@ import os
 import sys
 import subprocess
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 
 load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
 GPT_MODEL = "gpt-4-turbo-preview"
 
 def run_python_app(app_path):
@@ -51,15 +51,13 @@ def analyze_error_with_gpt(error_message, bundled_code):
     Can you identify the problem and suggest how to fix it?
     """
     try:
-        response = openai.ChatCompletion.create(
-            model=GPT_MODEL,
-            messages=[
-                {"role": "system", "content": "You're an expert Python debugger and coder."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.2,
-            max_tokens=1200,
-        )
+        response = client.chat.completions.create(model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": "You're an expert Python debugger and coder."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.2,
+        max_tokens=1200)
         advice = response.choices[0].message.content.strip()
         return advice
     except Exception as e:
