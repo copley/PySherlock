@@ -29,7 +29,7 @@ Use a different report path with `--output`, and set a command timeout with `--t
 ## Safety boundary
 
 - Shell execution is not used.
-- Only `python`, `python3`, `pytest`, `pip`, `pip3`, and `docker` are allowed in v1.
+- Only `python`, `python3`, `pytest`, `pip`, and `pip3` are allowed in v1.
 - Outputs are redacted heuristically before persistence.
 - No AI call, code modification, merge, push, or external side effect occurs.
 
