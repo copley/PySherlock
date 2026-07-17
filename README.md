@@ -2,6 +2,8 @@
 
 > Evidence-first debugging control plane for local repositories.
 
+For debugging case studies and paid repo-rescue enquiries, see [Paid Debugging Lab](https://github.com/copley/paid-debugging-lab).
+
 ## Milestone 1: evidence capture
 
 PySherlock now provides a safe foundation for AI-assisted debugging. It runs an allow-listed command in a local repository, captures stdout, stderr, exit status and duration, redacts common token-like values, and writes a versioned JSON evidence report.
