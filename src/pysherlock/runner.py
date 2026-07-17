@@ -14,7 +14,7 @@ class CommandNotAllowedError(ValueError):
     """Raised when the requested program is outside the v1 allow-list."""
 
 
-DEFAULT_ALLOWED_PROGRAMS = frozenset({"python", "python3", "pytest", "pip", "pip3", "docker"})
+DEFAULT_ALLOWED_PROGRAMS = frozenset({"python", "python3", "pytest", "pip", "pip3"})
 
 
 def run_command(
