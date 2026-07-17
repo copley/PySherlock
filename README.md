@@ -1,109 +1,46 @@
 # PySherlock
 
-> An AI debugging control plane for reproducible, evidence-based software diagnosis.
+> Evidence-first debugging control plane for local repositories.
 
-## Status
+## Milestone 1: evidence capture
 
-PySherlock is currently in the design stage. This repository will evolve from an earlier GPT-powered Python debugging assistant into a focused tool for investigating failed repositories and CI jobs safely.
+PySherlock now provides a safe foundation for AI-assisted debugging. It runs an allow-listed command in a local repository, captures stdout, stderr, exit status and duration, redacts common token-like values, and writes a versioned JSON evidence report.
 
-It will not claim that an AI patch is correct merely because it looks plausible. Every recommendation must be tied to evidence, verification, and a human approval boundary.
+It does **not** call an AI model, modify the target repository, or automatically push code. Those capabilities require later milestones and explicit approval boundaries.
 
-## The problem
+## Quick start
 
-AI coding agents can inspect code, run commands, and propose fixes. The difficult engineering work is controlling that process:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e . pytest
 
-- collecting the right evidence;
-- reproducing the real failure;
-- separating hypotheses from facts;
-- testing a minimal fix;
-- reviewing the fix for regressions and safety;
-- retaining a durable record of why the decision was made.
-
-PySherlock is intended to provide that control layer.
-
-## V1 goal
-
-A Python CLI that accepts:
-
-- a local Git repository;
-- a failing command and/or failure log;
-- optional execution and budget settings;
-
-and runs specialised AI-assisted debugging stages to produce a structured evidence report.
-
-The v1 output will be a diagnosis, a verified patch proposal, or an explicit decision to abstain and escalate. It will not automatically merge or push code.
-
-## Planned foundation
-
-- Python package managed with `pyproject.toml`
-- Typed domain models and configuration
-- Structured logging and JSON evidence reports
-- Clear CLI commands
-- Unit and integration tests
-- Docker-based execution sandbox
-- GitHub Actions CI
-
-## Planned debugging pipeline
-
-```text
-Repository inspection
-  → Failure reproduction
-  → Evidence collection
-  → Competing hypotheses
-  → Minimal patch proposal
-  → Targeted verification
-  → Adversarial review
-  → Final decision
+pysherlock --repo ./demo -- python failing_command.py
 ```
 
-Each stage must record its inputs, commands run, findings, confidence, and limitations.
+The command exits non-zero because the demo intentionally fails. PySherlock writes the report to:
 
-## Safe agent orchestration
+```text
+demo/.pysherlock/evidence.json
+```
 
-PySherlock will use multiple specialist roles, but orchestration is not a substitute for judgement.
+Use a different report path with `--output`, and set a command timeout with `--timeout`.
 
-Planned safeguards:
+## Safety boundary
 
-- isolated Git worktrees/branches for proposed changes;
-- allow-listed commands and timeouts;
-- token and cost budgets;
-- secret detection and redaction;
-- test and review gates before a patch is accepted;
-- no automatic merge, push, or external side effect without explicit human approval;
-- a clear `abstain` outcome when the evidence is insufficient.
+- Shell execution is not used.
+- Only `python`, `python3`, `pytest`, `pip`, `pip3`, and `docker` are allowed in v1.
+- Outputs are redacted heuristically before persistence.
+- No AI call, code modification, merge, push, or external side effect occurs.
 
-## Proving it works
+## Roadmap
 
-The repository will include deliberately broken demo fixtures and benchmark scenarios, such as:
+Later milestones will add repository inspection, failure reproduction, evidence-backed hypotheses, minimal patch proposals, verification, adversarial review, and a human-approved final decision.
 
-- failing GitHub Actions jobs;
-- Python dependency conflicts;
-- Docker build/runtime failures;
-- API integration failures;
-- flaky browser-automation tests.
+## Development
 
-For each scenario, PySherlock will be measured on:
-
-- whether it reproduced the failure;
-- whether its root-cause explanation was correct;
-- whether a proposed patch passed verification;
-- whether the review stage rejected unsafe or incomplete fixes;
-- elapsed time and AI cost per outcome.
-
-## Employer-ready evidence
-
-The finished project will include:
-
-- an architecture diagram;
-- sample structured evidence reports;
-- terminal demonstrations and screenshots;
-- an honest account of limitations and failure modes;
-- reproducible benchmark results.
-
-## Scope
-
-PySherlock is not intended to be a generic “autonomous coding agent.” It is a narrow, auditable debugging workflow for Python, Docker, and GitHub Actions failures.
-
-## License
-
-MIT License
+```bash
+pip install -e . pytest ruff
+pytest -q
+ruff check src tests
+```
