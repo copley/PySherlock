@@ -1,108 +1,109 @@
-# 🐍 PySherlock – GPT-powered Python Debugging Assistant
+# PySherlock
 
-**PySherlock** is a powerful command-line tool designed to instantly identify and resolve Python errors by leveraging OpenAI's GPT-4-turbo-preview model. It simplifies the debugging process by analyzing your entire codebase alongside any runtime error messages, providing precise, AI-generated explanations and suggested solutions directly in your terminal.
+> An AI debugging control plane for reproducible, evidence-based software diagnosis.
 
-## 🚀 Features
+## Status
 
-- **Instant Debugging:** Automatically captures Python errors and provides detailed insights.
-- **GPT-4 Integration:** Utilizes OpenAI's GPT-4-turbo-preview for accurate and intelligent debugging.
-- **Full Codebase Analysis:** Easily bundles your Python files into one readable format for comprehensive context.
-- **Command-Line Simplicity:** Designed for ease of use directly from your terminal.
+PySherlock is currently in the design stage. This repository will evolve from an earlier GPT-powered Python debugging assistant into a focused tool for investigating failed repositories and CI jobs safely.
 
-## ⚙️ Installation
+It will not claim that an AI patch is correct merely because it looks plausible. Every recommendation must be tied to evidence, verification, and a human approval boundary.
 
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/yourusername/PySherlock.git
-cd PySherlock
+## The problem
+
+AI coding agents can inspect code, run commands, and propose fixes. The difficult engineering work is controlling that process:
+
+- collecting the right evidence;
+- reproducing the real failure;
+- separating hypotheses from facts;
+- testing a minimal fix;
+- reviewing the fix for regressions and safety;
+- retaining a durable record of why the decision was made.
+
+PySherlock is intended to provide that control layer.
+
+## V1 goal
+
+A Python CLI that accepts:
+
+- a local Git repository;
+- a failing command and/or failure log;
+- optional execution and budget settings;
+
+and runs specialised AI-assisted debugging stages to produce a structured evidence report.
+
+The v1 output will be a diagnosis, a verified patch proposal, or an explicit decision to abstain and escalate. It will not automatically merge or push code.
+
+## Planned foundation
+
+- Python package managed with `pyproject.toml`
+- Typed domain models and configuration
+- Structured logging and JSON evidence reports
+- Clear CLI commands
+- Unit and integration tests
+- Docker-based execution sandbox
+- GitHub Actions CI
+
+## Planned debugging pipeline
+
+```text
+Repository inspection
+  → Failure reproduction
+  → Evidence collection
+  → Competing hypotheses
+  → Minimal patch proposal
+  → Targeted verification
+  → Adversarial review
+  → Final decision
 ```
 
-### Step 2: Set Up Environment
+Each stage must record its inputs, commands run, findings, confidence, and limitations.
 
-Create and activate a virtual environment (recommended):
+## Safe agent orchestration
 
-```bash
-python -m venv env
-source env/bin/activate   # Linux/Mac
-.\env\Scripts\activate   # Windows
-```
+PySherlock will use multiple specialist roles, but orchestration is not a substitute for judgement.
 
-Install dependencies:
+Planned safeguards:
 
-```bash
-pip install -r requirements.txt
-```
+- isolated Git worktrees/branches for proposed changes;
+- allow-listed commands and timeouts;
+- token and cost budgets;
+- secret detection and redaction;
+- test and review gates before a patch is accepted;
+- no automatic merge, push, or external side effect without explicit human approval;
+- a clear `abstain` outcome when the evidence is insufficient.
 
-### Step 3: Configure OpenAI API Key
+## Proving it works
 
-Create a `.env` file in the project root directory with your OpenAI API key:
+The repository will include deliberately broken demo fixtures and benchmark scenarios, such as:
 
-```env
-OPENAI_API_KEY=your_openai_api_key_here
-```
+- failing GitHub Actions jobs;
+- Python dependency conflicts;
+- Docker build/runtime failures;
+- API integration failures;
+- flaky browser-automation tests.
 
-Obtain your API key at [OpenAI](https://platform.openai.com/api-keys).
+For each scenario, PySherlock will be measured on:
 
-## 🖥 Usage
+- whether it reproduced the failure;
+- whether its root-cause explanation was correct;
+- whether a proposed patch passed verification;
+- whether the review stage rejected unsafe or incomplete fixes;
+- elapsed time and AI cost per outcome.
 
-Run your Python script through PySherlock:
+## Employer-ready evidence
 
-```bash
-python app_runner.py
-```
+The finished project will include:
 
-PySherlock executes your code, captures any errors, and automatically sends the error along with your codebase to GPT-4 for analysis. The results are returned in clear, actionable advice directly in your terminal.
+- an architecture diagram;
+- sample structured evidence reports;
+- terminal demonstrations and screenshots;
+- an honest account of limitations and failure modes;
+- reproducible benchmark results.
 
-## 📂 Project Structure
+## Scope
 
-```
-PySherlock/
-├── app_runner.py
-├── .env
-├── requirements.txt
-└── your_code/
-    ├── your_script.py
-    └── additional_scripts.py
-```
+PySherlock is not intended to be a generic “autonomous coding agent.” It is a narrow, auditable debugging workflow for Python, Docker, and GitHub Actions failures.
 
-## 🎯 Example Output
-
-When an error occurs, PySherlock provides:
-
-```
-❌ Application Error:
-Traceback (most recent call last):
-  File "your_script.py", line 3, in <module>
-    print(undeclared_variable)
-NameError: name 'undeclared_variable' is not defined
-
-🛠 Asking GPT-4-turbo-preview for help...
-
-🔎 GPT Analysis & Recommendations:
-The error indicates you are trying to print a variable (`undeclared_variable`) that has not yet been defined or declared in your script. To fix this error, ensure the variable is initialized with a value before attempting to use it. For example:
-
-```python
-undeclared_variable = "Hello, world!"
-print(undeclared_variable)
-```
-```
-
-## 📜 License
+## License
 
 MIT License
-
-## ✨ Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-- Fork the project
-- Create a new branch (`git checkout -b feature/your-feature`)
-- Commit your changes (`git commit -m 'Add some feature'`)
-- Push to the branch (`git push origin feature/your-feature`)
-- Open a pull request
-
----
-
-**Happy Debugging!** 🔍🐍
-
-
